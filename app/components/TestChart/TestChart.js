@@ -3,7 +3,7 @@ import React from "react";
 import './TestChart.css';
 
 import {
-  PieChart, Pie, Legend, Cell
+  ResponsiveContainer, PieChart, Pie, Legend, Cell
 } from 'recharts';
 import {Progress} from "reactstrap";
 
@@ -22,47 +22,50 @@ export default class TestChart extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+          name: '',
           updated: '',
           testsResults: [],
           totalTests: [],
         }
     }
 
-    componentDidMount() {
-      this.getTestsAndSetToState()
-      setInterval(()=>{
-        this.getTestsAndSetToState()
-      }, 5000)
+    componentDidUpdate(prevProps, prevState) {
+      let {data} = this.props;
+      if (prevState.updated !== data.updated) {
+        this.updateData()        
+      }
+      if (prevProps.numOfJobs !== this.props.numOfJobs) {
+        this.setGrid(this.props.numOfJobs)
+      }
     }
 
-    getTestsAndSetToState() {
-      let that = this;
-      fetch('/data')
-        .then(
-          function(response) {
-            if (response.status !== 200) {
-              console.log('Looks like there was a problem. Status Code: ' +
-                response.status);
-              return;
-            }
+    componentDidMount() {
+      this.setGrid(this.props.numOfJobs)
+      this.updateData()
+    }
 
-            // Examine the text in the response
-            response.json().then(function(data) {
-              data = data[0];
-              let totalTests = data.tests.find((test) => test.name === 'total');
-              let testsResults = data.tests.filter((test) => test.name !== 'total');
-              
-              that.setState(Object.assign(that.state, {
-                updated: data.updated,
-                totalTests: [totalTests],
-                testsResults,
-              }))
-            });
-          }
-        )
-        .catch(function(err) {
-          console.log('Fetch Error :-S', err);
-        });
+    setGrid(numOfJobs) {
+      console.log(numOfJobs)
+      if (numOfJobs <= 3) {
+        this.setState({ width: (window.innerWidth / numOfJobs) - 80, height: window.innerHeight - 150 })
+      }
+      if (numOfJobs > 3) {
+        this.setState({ width: (window.innerWidth / 3) - 80, height: (window.innerHeight / 2) - 80 })
+      }
+    }
+
+    updateData() {
+      let {data} = this.props;
+
+      let totalTests = data.tests.find((test) => test.name === 'total');
+      let testsResults = data.tests.filter((test) => test.name !== 'total');
+      
+      this.setState(Object.assign(this.state, {
+        name: data.name,
+        updated: data.updated,
+        totalTests: [totalTests],
+        testsResults,
+      }))
     }
 
     renderCustomizedLabel({cx, cy, midAngle, innerRadius, outerRadius, value}) {
@@ -71,7 +74,7 @@ export default class TestChart extends React.Component {
         const y = cy + radius * Math.sin(-midAngle * RADIAN);
     
       return (
-        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={value < 3 ? "20" : "30"}>
+        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={value < 3 ? "10" : "20"}>
           {value}
         </text>
       );
@@ -83,34 +86,34 @@ export default class TestChart extends React.Component {
         const finishedTestsNum = testsResults.reduce((acc, cur) => acc + cur.value, 0);
         const finishedTestsPercent = totalTests.length > 0 ? finishedTestsNum / totalTestsNum * 100 : 0;
         return (
-          <div className="test-chart-container">
-            <PieChart width={800} height={580} className="test-chart">
-            {/* <Pie className="total-tests" data={totalTests} dataKey="value" cx={400} cy={350} innerRadius={270} outerRadius={300} fill={colors.total} label /> */}
-              <Pie
-                data={testsResults}
-                cx={400}
-                cy={280}
-                labelLine={false}
-                label={this.renderCustomizedLabel}
-                outerRadius={250}
-                fill="#8884d8"
-                dataKey="value"
-                legendType="square"
-              >
-                {
-                  testsResults.map((entry, index) => <Cell key={`cell-${index}`} fill={colors[entry.name.toLowerCase()]} />)
-                }
-              </Pie>
-              <Legend verticalAlign="top" height={36} formatter={
-                (value, entry) => {
-                  const { color } = entry;
-                  
-                  return value !== "empty" && <span>{value}</span>;
-                }
-              }/>
-            </PieChart>
+          <div className="test-chart-container" style={{ width: this.state.width, height: this.state.height }}>
+            <span>{this.state.name}</span>
+            <ResponsiveContainer>
+              <PieChart className="test-chart">
+              {/* <Pie className="total-tests" data={totalTests} dataKey="value" cx={400} cy={350} innerRadius={270} outerRadius={300} fill={colors.total} label /> */}
+                <Pie
+                  data={testsResults}
+                  labelLine={false}
+                  label={this.renderCustomizedLabel}
+                  fill="#8884d8"
+                  dataKey="value"
+                  legendType="square"
+                >
+                  {
+                    testsResults.map((entry, index) => <Cell key={`cell-${index}`} fill={colors[entry.name.toLowerCase()]} />)
+                  }
+                </Pie>
+                <Legend verticalAlign="top" height={36} formatter={
+                  (value, entry) => {
+                    const { color } = entry;
+                    
+                    return value !== "empty" && <span>{value}</span>;
+                  }
+                }/>
+              </PieChart>
+            </ResponsiveContainer>
             <div className="progress-wrapper">
-              <div className="text-center">{finishedTestsPercent.toFixed(0)}% - ({finishedTestsNum} / {totalTestsNum})</div>
+              <div className="text-center" style={{width: this.state.width}}>{finishedTestsPercent.toFixed(0)}% - ({finishedTestsNum} / {totalTestsNum})</div>
               <Progress multi>
                 {testsResults.map((test, index) => (
                   <Progress bar value={(test.value / totalTests[0].value) * 100} color={test.name} key={index}/>

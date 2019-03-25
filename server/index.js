@@ -50,7 +50,7 @@ const requireTests = () => {
     let fileFullPath = path.join("../data/", item);
     let dataFile = require(fileFullPath);
     const parsedData = dataParser(dataFile);
-    parsedData.name = item;
+    parsedData.name = item.replace('.properties', '').replace(/_/g, ' ');
     tests.push(parsedData);
   });
 }
