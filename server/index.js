@@ -22,8 +22,8 @@ const app = express();
 const fs = require("fs");
 const filewatcher = require('filewatcher');
 const path = require("path");
-const dataFolderPath = path.join(__dirname, "../data")
-// const dataFolderPath = "/home/user/workspace"
+// const dataFolderPath = path.join(__dirname, "../data")
+const dataFolderPath = "/home/user/workspace"
 const dataParser = require("../utils/dataParser");
 
 let tests = [];
