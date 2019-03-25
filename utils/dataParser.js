@@ -34,10 +34,12 @@ const parse = function(data) {
         let key = line.split('=')[0];
         let value = line.split('=')[1];
 
-        parsedData.tests.push({
-            name: key,
-            value: Number(value)
-        })
+        if (!_.isNull(key) && !_.isNull(value)) {
+            parsedData.tests.push({
+                name: key,
+                value: Number(value)
+            })
+        }
     })
 
     parsedData.tests = _.sortBy(parsedData.tests, "name")
