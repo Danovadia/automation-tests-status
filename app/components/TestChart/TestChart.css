@@ -4,6 +4,11 @@
     justify-content: center;
     align-items: center; 
     color: #fff;
+    margin-bottom: 30px;
+}
+
+.pie-value {
+    text-shadow: 0px 0px 10px #6b6b6b;
 }
 
 .progress-wrapper {
@@ -12,7 +17,9 @@
 }
 
 .progress {
-    height: 25px !important;       
+    height: 25px !important;  
+    background-color: #1f1f1f;
+    border: 1px solid #fff;     
 }
 
 .bg-pass{
@@ -25,5 +32,5 @@
     background-color: #afafaf !important;
 }
 .bg-openissue {
-    background-color: #e8b264 !important;
+    background-color: #61a3ff !important;
 }

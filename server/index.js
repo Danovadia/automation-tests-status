@@ -21,12 +21,13 @@ const app = express();
 const fs = require("fs");
 const filewatcher = require('filewatcher');
 const path = require("path");
-const dataFolderPath = path.join(__dirname, "../data")
+// const dataFolderPath = path.join(__dirname, "../data")
+const dataFolderPath = "/home/user/workspace"
 const dataParser = require("../utils/dataParser");
 
 let tests = [];
 
-require.extensions['.txt'] = function (module, filename) {
+require.extensions['.properties'] = function (module, filename) {
   module.exports = fs.readFileSync(filename, 'utf8');
 };
 
@@ -35,7 +36,7 @@ watcher.add(dataFolderPath);
 watcher.on('change', function(file, stat) {
   console.log('Tests modified: %s', file);
   for (const key in require.cache) {
-    if (key.endsWith(".txt")) {
+    if (key.endsWith(".properties")) {
       delete require.cache[key]
     }
   }
@@ -47,12 +48,14 @@ const requireTests = () => {
   
   let files = fs.readdirSync(dataFolderPath);
   files.forEach((item) => {
-    let fileFullPath = path.join("../data/", item);
-    let dataFile = require(fileFullPath);
-    const parsedData = dataParser(dataFile);
-    parsedData.name = item.replace('.properties', '').replace(/_/g, ' ');
-    tests.push(parsedData);
-  });
+	if (item.endsWith('suiteTestsResultFile.properties')) {
+    		let fileFullPath = path.join(dataFolderPath, item);
+    		let dataFile = require(fileFullPath);
+    		const parsedData = dataParser(dataFile);
+    		parsedData.name = item.replace('.properties', '').replace(/_/g, ' ');
+    		tests.push(parsedData);
+	}
+	});
 }
 
 requireTests()

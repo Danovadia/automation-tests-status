@@ -12,7 +12,7 @@ const colors = {
   pass: "#7cdc7c",
   fail: "#f34545",
   skip: "#afafaf",
-  openissue: "#e8b264",
+  openissue: "#61a3ff",
 }
 
 const RADIAN = Math.PI / 180;
@@ -45,7 +45,6 @@ export default class TestChart extends React.Component {
     }
 
     setGrid(numOfJobs) {
-      console.log(numOfJobs)
       if (numOfJobs <= 3) {
         this.setState({ width: (window.innerWidth / numOfJobs) - 80, height: window.innerHeight - 150 })
       }
@@ -69,15 +68,15 @@ export default class TestChart extends React.Component {
     }
 
     renderCustomizedLabel({cx, cy, midAngle, innerRadius, outerRadius, value}) {
-       const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-        const x = cx + radius * Math.cos(-midAngle * RADIAN);
-        const y = cy + radius * Math.sin(-midAngle * RADIAN);
+      const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+      const x = cx + radius * Math.cos(-midAngle * RADIAN);
+      const y = cy + radius * Math.sin(-midAngle * RADIAN);
     
-      return (
-        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={value < 3 ? "10" : "20"}>
-          {value}
-        </text>
-      );
+      return value > 0 ? (
+          <text className="pie-value" x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={value < 3 ? "10" : this.props.numOfJobs > 3 ? "30" : "40"}>
+            {value}
+          </text>
+        ) : "";
     };
 
     render() {
@@ -88,13 +87,13 @@ export default class TestChart extends React.Component {
         return (
           <div className="test-chart-container" style={{ width: this.state.width, height: this.state.height }}>
             <span>{this.state.name}</span>
-            <ResponsiveContainer>
+            <ResponsiveContainer height={this.state.height - 100}>
               <PieChart className="test-chart">
               {/* <Pie className="total-tests" data={totalTests} dataKey="value" cx={400} cy={350} innerRadius={270} outerRadius={300} fill={colors.total} label /> */}
                 <Pie
                   data={testsResults}
                   labelLine={false}
-                  label={this.renderCustomizedLabel}
+                  label={this.renderCustomizedLabel.bind(this)}
                   fill="#8884d8"
                   dataKey="value"
                   legendType="square"

@@ -45,9 +45,13 @@ export default class Dashboard extends React.Component {
             <div>
                 <div className="header-title">Automation test results</div>
                 <div className="charts-container">
-                    {this.state.jobs.map((job, index) => (
+                    {this.state.jobs.length > 0 ? (
+                      this.state.jobs.map((job, index) => (
                         <TestChart data={job} numOfJobs={this.state.jobs.length} key={index}/>
-                    ))}
+                    ))) : (
+                      <div>No tests are currently running</div>
+                    )
+                  }
                 </div>
             </div>
         )
