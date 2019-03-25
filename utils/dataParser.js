@@ -1,3 +1,5 @@
+const _ = require("lodash");
+
 const getData = (callback) => { 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "data.txt", true);
@@ -38,7 +40,8 @@ const parse = function(data) {
         })
     })
 
-    parsedData.tests = parsedData.tests.reverse()
+    parsedData.tests = _.sortBy(parsedData.tests, "name")
+
     return parsedData;
 }
 

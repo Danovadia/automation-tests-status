@@ -2,6 +2,7 @@
 
 const express = require('express');
 const logger = require('./logger');
+const _ = require("lodash");
 
 const argv = require('./argv');
 const port = require('./port');
@@ -21,8 +22,8 @@ const app = express();
 const fs = require("fs");
 const filewatcher = require('filewatcher');
 const path = require("path");
-// const dataFolderPath = path.join(__dirname, "../data")
-const dataFolderPath = "/home/user/workspace"
+const dataFolderPath = path.join(__dirname, "../data")
+// const dataFolderPath = "/home/user/workspace"
 const dataParser = require("../utils/dataParser");
 
 let tests = [];
@@ -51,8 +52,8 @@ const requireTests = () => {
 	if (item.endsWith('suiteTestsResultFile.properties')) {
     		let fileFullPath = path.join(dataFolderPath, item);
     		let dataFile = require(fileFullPath);
-    		const parsedData = dataParser(dataFile);
-    		parsedData.name = item.replace('.properties', '').replace(/_/g, ' ');
+    		let parsedData = dataParser(dataFile);
+        parsedData.name = item.replace('.properties', '').replace(/_/g, ' ');
     		tests.push(parsedData);
 	}
 	});
