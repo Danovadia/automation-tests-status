@@ -17,6 +17,53 @@ const app = express();
 // If you need a backend, e.g. an API, add your custom backend-specific middleware here
 // app.use('/api', myApi);
 
+// tests data logic - if extending please take out of index.js
+const fs = require("fs");
+const filewatcher = require('filewatcher');
+const path = require("path");
+const dataFolderPath = path.join(__dirname, "../data")
+const dataParser = require("../utils/dataParser");
+
+let tests = [];
+
+require.extensions['.txt'] = function (module, filename) {
+  module.exports = fs.readFileSync(filename, 'utf8');
+};
+
+const watcher = filewatcher();
+watcher.add(dataFolderPath);
+watcher.on('change', function(file, stat) {
+  console.log('Tests modified: %s', file);
+  for (const key in require.cache) {
+    if (key.endsWith(".txt")) {
+      delete require.cache[key]
+    }
+  }
+  requireTests();
+});
+
+const requireTests = () => {
+  tests = [];
+  
+  let files = fs.readdirSync(dataFolderPath);
+  files.forEach((item) => {
+    let fileFullPath = path.join("../data/", item);
+    let dataFile = require(fileFullPath);
+    const parsedData = dataParser(dataFile);
+    parsedData.name = item;
+    tests.push(parsedData);
+  });
+}
+
+requireTests()
+
+app.get('/data', (req, res, next) => {
+  res.setHeader('Content-Type', 'application/json');
+  return res.send(tests)
+});
+// end of data parsing and routing
+
+
 // In production we need to pass these values in instead of relying on webpack
 setup(app, {
   outputPath: resolve(process.cwd(), 'build'),
