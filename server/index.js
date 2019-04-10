@@ -49,7 +49,7 @@ const requireTests = () => {
   
   let files = fs.readdirSync(dataFolderPath);
   files.forEach((item) => {
-	if (item.endsWith('suiteTestsResultFile.properties')) {
+	if (item.endsWith('stats.properties')) {
     		let fileFullPath = path.join(dataFolderPath, item);
     		let dataFile = require(fileFullPath);
     		let parsedData = dataParser(dataFile);
