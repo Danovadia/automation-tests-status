@@ -22,8 +22,8 @@ const app = express();
 const fs = require("fs");
 const filewatcher = require('filewatcher');
 const path = require("path");
-// const dataFolderPath = path.join(__dirname, "../data")
-const dataFolderPath = "/home/user/workspace"
+const dataFolderPath = path.join(__dirname, "../data")
+// const dataFolderPath = "/home/user/workspace"
 const dataParser = require("../utils/dataParser");
 
 let tests = [];
@@ -49,13 +49,13 @@ const requireTests = () => {
   
   let files = fs.readdirSync(dataFolderPath);
   files.forEach((item) => {
-	if (item.endsWith('stats.properties')) {
-    		let fileFullPath = path.join(dataFolderPath, item);
-    		let dataFile = require(fileFullPath);
-    		let parsedData = dataParser(dataFile);
-        parsedData.name = item.replace('.properties', '').replace(/_/g, ' ');
-    		tests.push(parsedData);
-	}
+    if (item.endsWith('stats.properties')) {
+          let fileFullPath = path.join(dataFolderPath, item);
+          let dataFile = require(fileFullPath);
+          let parsedData = dataParser(dataFile);
+          parsedData.name = item.replace('.properties', '').replace(/_/g, ' ');
+          tests.push(parsedData);
+    }
 	});
 }
 

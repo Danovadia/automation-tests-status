@@ -17,27 +17,27 @@ export const getData = (callback) => {
 }
 
 export const parse = function(data) {
-    let parsedData = {
-        updated: null,
-        tests: [],
-        progress: {}
-    };
-    let dataLines = data.split('\n');
+    // let parsedData = {
+    //     updated: null,
+    //     tests: [],
+    //     progress: {}
+    // };
+    // let dataLines = data.split('\n');
 
-    dataLines.forEach(line => {
-        if (line.startsWith('#')) {
-            return parsedData.updated = line.slice(1);
-        }
+    // dataLines.forEach(line => {
+    //     if (line.startsWith('#')) {
+    //         return parsedData.updated = line.slice(1);
+    //     }
 
-        let key = line.split('=')[0];
-        let value = line.split('=')[1];
+    //     let key = line.split('=')[0];
+    //     let value = line.split('=')[1];
 
-        parsedData.tests.push({
-            name: key,
-            value: Number(value)
-        })
-    })
+    //     parsedData.tests.push({
+    //         name: key,
+    //         value: Number(value)
+    //     })
+    // })
 
-    parsedData.tests = parsedData.tests.reverse()
-    return parsedData;
+    // parsedData.tests = parsedData.tests.reverse()
+    // return parsedData;
 }

@@ -7,30 +7,48 @@
     margin-bottom: 30px;
 }
 
-.pie-value {
+.test-chart-container .testTitle {
+    margin-bottom: 20px;
+}
+
+.test-chart-container .infoTableContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.test-chart-container .pie-value {
     text-shadow: 0px 0px 10px #6b6b6b;
 }
 
-.progress-wrapper {
-    margin-top: 20px;
+.test-chart-container .progress-wrapper {
     font-size: 20px;
 }
 
-.progress {
+.test-chart-container .progress {
     height: 25px !important;  
     background-color: #1f1f1f;
-    border: 1px solid #fff;     
+    border: 1px solid #fff; 
+    margin-bottom: 10px;    
 }
 
-.bg-pass{
+.test-chart-container .bg-pass{
     background-color: #7cdc7c !important;
 }
-.bg-fail {
+.test-chart-container .bg-fail {
     background-color: #f34545 !important;
 }
-.bg-skip {
+.test-chart-container .bg-skip {
     background-color: #afafaf !important;
 }
-.bg-openissue {
+.test-chart-container .bg-openissue {
     background-color: #61a3ff !important;
+}
+
+.test-chart-container .infoTableContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.test-chart-container .listScrollerContainer {
+    overflow: hidden
 }

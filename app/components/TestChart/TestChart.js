@@ -6,6 +6,8 @@ import {
   ResponsiveContainer, PieChart, Pie, Legend, Cell
 } from 'recharts';
 import {Progress} from "reactstrap";
+import InfoTable from "../InfoTable/InfoTable"
+import ListScroller from "../ListScroller/ListScroller"
 
 const colors = {
   total: "#8ebfec",
@@ -26,6 +28,8 @@ export default class TestChart extends React.Component {
           updated: '',
           testsResults: [],
           totalTests: [],
+          started: [],
+          infoTable: []
         }
     }
 
@@ -45,12 +49,12 @@ export default class TestChart extends React.Component {
     }
 
     setGrid(numOfJobs) {
-      if (numOfJobs <= 3) {
+      // if (numOfJobs <= 3) {
         this.setState({ width: (window.innerWidth / numOfJobs) - 80, height: window.innerHeight - 150 })
-      }
-      if (numOfJobs > 3) {
-        this.setState({ width: (window.innerWidth / 3) - 80, height: (window.innerHeight / 2) - 80 })
-      }
+      // }
+      // if (numOfJobs > 3) {
+      //   this.setState({ width: (window.innerWidth / 3) - 80, height: (window.innerHeight / 2) - 80 })
+      // }
     }
 
     updateData() {
@@ -64,6 +68,8 @@ export default class TestChart extends React.Component {
         updated: data.updated,
         totalTests: [totalTests],
         testsResults,
+        infoTable: data.infoTable,
+        started: data.started
       }))
     }
 
@@ -73,7 +79,7 @@ export default class TestChart extends React.Component {
       const y = cy + radius * Math.sin(-midAngle * RADIAN);
     
       return value > 0 ? (
-          <text className="pie-value" x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={value < 3 ? "10" : this.props.numOfJobs > 3 ? "30" : "40"}>
+          <text className="pie-value" x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={value < 3 ? "18" : "40"}>
             {value}
           </text>
         ) : "";
@@ -85,9 +91,12 @@ export default class TestChart extends React.Component {
         const finishedTestsNum = testsResults.reduce((acc, cur) => acc + cur.value, 0);
         const finishedTestsPercent = totalTests.length > 0 ? finishedTestsNum / totalTestsNum * 100 : 0;
         return (
-          <div className="test-chart-container" style={{ width: this.state.width, height: this.state.height }}>
-            <span>{this.state.name}</span>
-            <ResponsiveContainer height={this.state.height - 100}>
+          <div className="test-chart-container" style={{ width: this.state.width, /*height: this.state.height*/ }}>
+            <h3 className="testTitle">{this.state.name}</h3>
+            <div className="infoTableContainer">
+              <InfoTable tableData={this.state.infoTable} />
+            </div>
+            <ResponsiveContainer height={this.state.height - 500}>
               <PieChart className="test-chart">
               {/* <Pie className="total-tests" data={totalTests} dataKey="value" cx={400} cy={350} innerRadius={270} outerRadius={300} fill={colors.total} label /> */}
                 <Pie
@@ -97,15 +106,15 @@ export default class TestChart extends React.Component {
                   fill="#8884d8"
                   dataKey="value"
                   legendType="square"
+                  outerRadius="260"
                 >
                   {
                     testsResults.map((entry, index) => <Cell key={`cell-${index}`} fill={colors[entry.name.toLowerCase()]} />)
                   }
                 </Pie>
-                <Legend verticalAlign="top" height={36} formatter={
+                <Legend verticalAlign="top" formatter={
                   (value, entry) => {
                     const { color } = entry;
-                    
                     return value !== "empty" && <span>{value}</span>;
                   }
                 }/>
@@ -118,6 +127,9 @@ export default class TestChart extends React.Component {
                   <Progress bar value={(test.value / totalTests[0].value) * 100} color={test.name} key={index}/>
                 ))}
               </Progress>
+            </div>
+            <div className="listScrollerContainer" style={{height: window.innerHeight/4}}>
+              <ListScroller list={this.state.started} />
             </div>
           </div>
         )
