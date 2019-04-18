@@ -50,7 +50,7 @@ export default class TestChart extends React.Component {
 
     setGrid(numOfJobs) {
       // if (numOfJobs <= 3) {
-        this.setState({ width: (window.innerWidth / numOfJobs) - 80, height: window.innerHeight - 150 })
+        this.setState({ width: (window.innerWidth / 3) - 80, height: window.innerHeight - 150 })
       // }
       // if (numOfJobs > 3) {
       //   this.setState({ width: (window.innerWidth / 3) - 80, height: (window.innerHeight / 2) - 80 })

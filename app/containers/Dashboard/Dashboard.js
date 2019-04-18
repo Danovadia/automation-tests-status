@@ -1,7 +1,21 @@
 import React from "react";
 
 import './Dashboard.css';
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
 import TestChart from "../../components/TestChart/TestChart";
+
+import Slider from "react-slick";
+
+const sliderSettings = {
+  dots: true,
+  infinite: true,
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 4000,
+  arrows: false
+};
 
 export default class Dashboard extends React.Component {
 
@@ -41,15 +55,17 @@ export default class Dashboard extends React.Component {
       }
 
     render() {
-        return (
-            <div>
-                <div className="header-title">{this.state.jobs.length > 0 ? "Automation test results" : "No tests are currently running"}</div>
-                <div className="charts-container">
-                    {this.state.jobs.map((job, index) => (
-                        <TestChart data={job} numOfJobs={this.state.jobs.length} key={index}/>
-                    ))}
+      return (
+        <div>
+          <div className="header-title">{this.state.jobs.length > 0 ? "Automation test results" : "No tests are currently running"}</div>
+          <Slider {...sliderSettings}>
+            {this.state.jobs.map((job, index) => (
+              <div className="charts-container">
+                <TestChart data={job} numOfJobs={this.state.jobs.length} key={index}/>
                 </div>
-            </div>
-        )
+            ))}
+          </Slider>
+        </div>
+      )
     }
 }
