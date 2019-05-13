@@ -60,8 +60,8 @@ export default class Dashboard extends React.Component {
           <div className="header-title">{this.state.jobs.length > 0 ? "Automation test results" : "No tests are currently running"}</div>
           <Slider {...sliderSettings}>
             {this.state.jobs.map((job, index) => (
-              <div className="charts-container">
-                <TestChart data={job} numOfJobs={this.state.jobs.length} key={index}/>
+              <div className="charts-container" key={index}>
+                <TestChart data={job} numOfJobs={this.state.jobs.length}/>
                 </div>
             ))}
           </Slider>

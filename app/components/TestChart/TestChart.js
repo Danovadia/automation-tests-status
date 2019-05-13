@@ -109,7 +109,7 @@ export default class TestChart extends React.Component {
                   outerRadius="260"
                 >
                   {
-                    testsResults.map((entry, index) => <Cell key={`cell-${index}`} fill={colors[entry.name.toLowerCase()]} />)
+                    testsResults.map((entry, index) => <Cell key={index} fill={colors[entry.name.toLowerCase()]} />)
                   }
                 </Pie>
                 <Legend verticalAlign="top" formatter={

@@ -1,7 +1,7 @@
 const _ = require("lodash");
 
 const pieKeys = ["openissue", "fail", "pass", "total", "skip"];
-const infoTableKeys = ["brand", "apk_version", "amount_of_emulators", "automation_branch", "tests_groups", "os_version"];
+// const infoTableKeys = ["brand", "apk_version", "amount_of_emulators", "automation_branch", "tests_groups", "os_version"];
 
 const getData = (callback) => { 
     var xhr = new XMLHttpRequest();
@@ -45,19 +45,19 @@ const parse = function(data) {
                 name: key,
                 value: Number(value)
             })
-        } else if (_.includes(infoTableKeys, key)) {
+        } else if (key === "started") {
+            parsedData.started = value;
+        } else {
             parsedData.infoTable.push({
                 name: key,
                 value: value
             })
-        } else {
-            parsedData[key] = value;
         }
     })
 
     parsedData.tests = _.sortBy(parsedData.tests, "name")
-    parsedData.started = parsedData.started.split(" ");
-
+    parsedData.started = _.compact(parsedData.started.split(" "));
+    
     return parsedData;
 }
 
