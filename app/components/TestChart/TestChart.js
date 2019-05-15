@@ -50,7 +50,7 @@ export default class TestChart extends React.Component {
 
     setGrid(numOfJobs) {
       // if (numOfJobs <= 3) {
-        this.setState({ width: (window.innerWidth / 3) - 80, height: window.innerHeight - 150 })
+        this.setState({ width: window.innerWidth, height: window.innerHeight - 150 })
       // }
       // if (numOfJobs > 3) {
       //   this.setState({ width: (window.innerWidth / 3) - 80, height: (window.innerHeight / 2) - 80 })
@@ -91,46 +91,48 @@ export default class TestChart extends React.Component {
         const finishedTestsNum = testsResults.reduce((acc, cur) => acc + cur.value, 0);
         const finishedTestsPercent = totalTests.length > 0 ? finishedTestsNum / totalTestsNum * 100 : 0;
         return (
-          <div className="test-chart-container" style={{ width: this.state.width, /*height: this.state.height*/ }}>
+          <div className="test-chart-container" style={{ width: this.state.width - 40, height: this.state.height }}>
             <h3 className="testTitle">{this.state.name}</h3>
-            <div className="infoTableContainer">
-              <InfoTable tableData={this.state.infoTable} />
+            <div className="test-columns">
+              <div className="listScrollerContainer" style={{height: '100%'}}>
+                <ListScroller list={this.state.started} />
+              </div>
+              <ResponsiveContainer>
+                <PieChart className="test-chart">
+                {/* <Pie className="total-tests" data={totalTests} dataKey="value" cx={400} cy={350} innerRadius={270} outerRadius={300} fill={colors.total} label /> */}
+                  <Pie
+                    data={testsResults}
+                    labelLine={false}
+                    label={this.renderCustomizedLabel.bind(this)}
+                    fill="#8884d8"
+                    dataKey="value"
+                    legendType="square"
+                    outerRadius="250"
+                  >
+                    {
+                      testsResults.map((entry, index) => <Cell key={index} fill={colors[entry.name.toLowerCase()]} />)
+                    }
+                  </Pie>
+                  <Legend verticalAlign="top" formatter={
+                    (value, entry) => {
+                      const { color } = entry;
+                      return value !== "empty" && <span>{value}</span>;
+                    }
+                  }/>
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="infoTableContainer" style={{height: '100%'}}>
+                <InfoTable tableData={this.state.infoTable} />
+              </div>
             </div>
-            <ResponsiveContainer height={this.state.height - 500}>
-              <PieChart className="test-chart">
-              {/* <Pie className="total-tests" data={totalTests} dataKey="value" cx={400} cy={350} innerRadius={270} outerRadius={300} fill={colors.total} label /> */}
-                <Pie
-                  data={testsResults}
-                  labelLine={false}
-                  label={this.renderCustomizedLabel.bind(this)}
-                  fill="#8884d8"
-                  dataKey="value"
-                  legendType="square"
-                  outerRadius="260"
-                >
-                  {
-                    testsResults.map((entry, index) => <Cell key={index} fill={colors[entry.name.toLowerCase()]} />)
-                  }
-                </Pie>
-                <Legend verticalAlign="top" formatter={
-                  (value, entry) => {
-                    const { color } = entry;
-                    return value !== "empty" && <span>{value}</span>;
-                  }
-                }/>
-              </PieChart>
-            </ResponsiveContainer>
             <div className="progress-wrapper">
-              <div className="text-center" style={{width: this.state.width}}>{finishedTestsPercent.toFixed(0)}% - ({finishedTestsNum} / {totalTestsNum})</div>
-              <Progress multi>
-                {testsResults.map((test, index) => (
-                  <Progress bar value={(test.value / totalTests[0].value) * 100} color={test.name} key={index}/>
-                ))}
-              </Progress>
-            </div>
-            <div className="listScrollerContainer" style={{height: window.innerHeight/4}}>
-              <ListScroller list={this.state.started} />
-            </div>
+                <div className="text-center">{finishedTestsPercent.toFixed(0)}% - ({finishedTestsNum} / {totalTestsNum})</div>
+                <Progress multi>
+                  {testsResults.map((test, index) => (
+                    <Progress bar value={(test.value / totalTests[0].value) * 100} color={test.name} key={index}/>
+                  ))}
+                </Progress>
+              </div>
           </div>
         )
     }
