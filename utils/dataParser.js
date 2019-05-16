@@ -38,6 +38,11 @@ const parse = function(data) {
         let key = line.split('=')[0];
         let value = line.split('=')[1];
 
+        if (!_.includes(line, '=')) {
+            key = line;
+            value = '';
+        }
+
         if (_.isNull(key) || _.isNull(value)) {
             return
         } else if (_.includes(pieKeys, key)) {
